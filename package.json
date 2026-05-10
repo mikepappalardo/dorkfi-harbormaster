@@ -1,12 +1,12 @@
 {
-  "name": "dorkfi-guardian",
+  "name": "dorkfi-harbormaster",
   "version": "1.0.0",
   "description": "Auto-rebalance microservice for DorkFi positions",
   "type": "module",
-  "main": "guardian.mjs",
+  "main": "harbormaster.mjs",
   "scripts": {
-    "start": "node guardian.mjs",
-    "watch": "node --watch guardian.mjs"
+    "start": "node harbormaster.mjs",
+    "watch": "node --watch harbormaster.mjs"
   },
   "dependencies": {
     "algosdk": "^3.0.0",

@@ -1,8 +1,8 @@
-# DorkFi Guardian
+# DorkFi Harbormaster
 
 Auto-rebalance microservice for DorkFi positions.
 
-Monitors health factor across Voi and Algorand. When a position drops below your configured floor, Guardian alerts you via Telegram and/or automatically executes a repayment to restore your target health factor.
+Monitors health factor across Voi and Algorand. When a position drops below your configured floor, Harbormaster alerts you via Telegram and/or automatically executes a repayment to restore your target health factor.
 
 ## How it works
 
@@ -22,8 +22,8 @@ Every N seconds:
 ### 1. Install
 
 ```bash
-git clone https://github.com/mikepappalardo/dorkfi-guardian
-cd dorkfi-guardian
+git clone https://github.com/mikepappalardo/dorkfi-harbormaster
+cd dorkfi-harbormaster
 npm install
 ```
 
@@ -85,7 +85,7 @@ Edit `config.json`:
 ### 4. Run
 
 ```bash
-node guardian.mjs
+node harbormaster.mjs
 ```
 
 ## Modes
@@ -100,14 +100,14 @@ MODE=alert
 
 ### Execute mode
 
-Automatically repays a portion of the top borrow position to restore the target health factor. Requires a funded guardian wallet with the relevant assets.
+Automatically repays a portion of the top borrow position to restore the target health factor. Requires a funded harbormaster wallet with the relevant assets.
 
 ```
 MODE=execute
 GUARDIAN_MNEMONIC=word1 word2 ...
 ```
 
-The guardian wallet needs to hold the borrowed asset to repay on behalf of the watched wallet. In self-custody setups, this is typically the same wallet (set `address` = guardian wallet address).
+The harbormaster wallet needs to hold the borrowed asset to repay on behalf of the watched wallet. In self-custody setups, this is typically the same wallet (set `address` = harbormaster wallet address).
 
 ## Health factor reference
 
@@ -122,7 +122,7 @@ The guardian wallet needs to hold the borrowed asset to repay on behalf of the w
 
 ## Run as a service (macOS LaunchAgent)
 
-Create `~/Library/LaunchAgents/com.dorkfi.guardian.plist`:
+Create `~/Library/LaunchAgents/com.dorkfi.harbormaster.plist`:
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -130,41 +130,41 @@ Create `~/Library/LaunchAgents/com.dorkfi.guardian.plist`:
 <plist version="1.0">
 <dict>
   <key>Label</key>
-  <string>com.dorkfi.guardian</string>
+  <string>com.dorkfi.harbormaster</string>
   <key>ProgramArguments</key>
   <array>
     <string>/usr/local/bin/node</string>
-    <string>/absolute/path/to/dorkfi-guardian/guardian.mjs</string>
+    <string>/absolute/path/to/dorkfi-harbormaster/harbormaster.mjs</string>
   </array>
   <key>WorkingDirectory</key>
-  <string>/absolute/path/to/dorkfi-guardian</string>
+  <string>/absolute/path/to/dorkfi-harbormaster</string>
   <key>RunAtLoad</key>
   <true/>
   <key>KeepAlive</key>
   <true/>
   <key>StandardOutPath</key>
-  <string>/absolute/path/to/dorkfi-guardian/guardian.log</string>
+  <string>/absolute/path/to/dorkfi-harbormaster/harbormaster.log</string>
   <key>StandardErrorPath</key>
-  <string>/absolute/path/to/dorkfi-guardian/guardian.log</string>
+  <string>/absolute/path/to/dorkfi-harbormaster/harbormaster.log</string>
 </dict>
 </plist>
 ```
 
 ```bash
-launchctl load ~/Library/LaunchAgents/com.dorkfi.guardian.plist
+launchctl load ~/Library/LaunchAgents/com.dorkfi.harbormaster.plist
 ```
 
 ## Run as a service (Linux systemd)
 
 ```ini
 [Unit]
-Description=DorkFi Guardian
+Description=DorkFi Harbormaster
 After=network.target
 
 [Service]
 Type=simple
-WorkingDirectory=/path/to/dorkfi-guardian
-ExecStart=/usr/bin/node guardian.mjs
+WorkingDirectory=/path/to/dorkfi-harbormaster
+ExecStart=/usr/bin/node harbormaster.mjs
 Restart=always
 RestartSec=10
 
@@ -173,8 +173,8 @@ WantedBy=multi-user.target
 ```
 
 ```bash
-sudo systemctl enable dorkfi-guardian
-sudo systemctl start dorkfi-guardian
+sudo systemctl enable dorkfi-harbormaster
+sudo systemctl start dorkfi-harbormaster
 ```
 
 ## Data sources

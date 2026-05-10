@@ -1,19 +1,19 @@
 #!/usr/bin/env node
 /**
- * DorkFi Guardian — Auto-Rebalance / Position Guardian Microservice
+ * DorkFi Harbormaster — Auto-Rebalance / Position Harbormaster Microservice
  *
  * Monitors DorkFi positions across Voi and Algorand.
  * When a wallet's health factor drops below a configured floor,
- * Guardian can alert via Telegram and/or automatically execute
+ * Harbormaster can alert via Telegram and/or automatically execute
  * a repayment or collateral add to restore the target HF.
  *
  * Modes:
  *   alert   — Telegram notification only (default, no funds required)
- *   execute — Auto-repay debt using guardian wallet funds
+ *   execute — Auto-repay debt using harbormaster wallet funds
  *
  * Setup: cp .env.example .env && fill in values
  *        Edit config.json to add wallets to watch
- *        node guardian.mjs
+ *        node harbormaster.mjs
  */
 
 import { createRequire } from 'module';
@@ -159,7 +159,7 @@ async function fireAlert(wallet, chain, hf, collateral, debt, state) {
   const debtStr = debt ? `$${parseFloat(debt).toFixed(2)}` : 'N/A';
 
   const msg = [
-    `${hfEmoji(hf)} *DorkFi Guardian Alert*`,
+    `${hfEmoji(hf)} *DorkFi Harbormaster Alert*`,
     ``,
     `*Wallet:* ${label} (\`${shortAddr}\`)`,
     `*Chain:* ${chain.charAt(0).toUpperCase() + chain.slice(1)}`,
@@ -169,7 +169,7 @@ async function fireAlert(wallet, chain, hf, collateral, debt, state) {
     ``,
     `Position is below your configured floor of ${wallet.hf_floor}.`,
     wallet.action === 'execute'
-      ? `Guardian is attempting automatic rebalance.`
+      ? `Harbormaster is attempting automatic rebalance.`
       : `Manual action required: repay debt or add collateral.`,
     ``,
     `[View Position](https://app.dork.fi/portfolio)`,
@@ -183,7 +183,7 @@ async function fireAlert(wallet, chain, hf, collateral, debt, state) {
 // ── Execute: auto-repay ───────────────────────────────────────────────────────
 
 async function executeRebalance(wallet, chain, hf, position) {
-  // Only supported in execute mode with a guardian mnemonic
+  // Only supported in execute mode with a harbormaster mnemonic
   const mnemonic = process.env.GUARDIAN_MNEMONIC;
   if (!mnemonic) {
     log(`  Execute mode requires GUARDIAN_MNEMONIC in .env`);
@@ -193,10 +193,10 @@ async function executeRebalance(wallet, chain, hf, position) {
   try {
     const algosdk = (await import('algosdk')).default;
 
-    // Derive guardian account
+    // Derive harbormaster account
     const account = algosdk.mnemonicToSecretKey(mnemonic);
 
-    log(`  Guardian wallet: ${account.addr}`);
+    log(`  Harbormaster wallet: ${account.addr}`);
 
     // Get markets to find best repay candidate
     const markets = await getMarkets(chain);
@@ -273,7 +273,7 @@ async function executeRebalance(wallet, chain, hf, position) {
     log(`  Rebalance tx submitted: ${result.txid}`);
 
     await sendTelegram(
-      `✅ *DorkFi Guardian — Rebalanced*\n\nWallet: \`${wallet.address.slice(0, 8)}...\`\nRepaid ${(repayPct * 100).toFixed(1)}% of ${symbol} position\nTx: \`${result.txid}\``
+      `✅ *DorkFi Harbormaster — Rebalanced*\n\nWallet: \`${wallet.address.slice(0, 8)}...\`\nRepaid ${(repayPct * 100).toFixed(1)}% of ${symbol} position\nTx: \`${result.txid}\``
     );
 
     return true;
@@ -334,7 +334,7 @@ async function runCycle(config, state) {
 // ── Entry point ───────────────────────────────────────────────────────────────
 
 async function main() {
-  log('DorkFi Guardian starting...');
+  log('DorkFi Harbormaster starting...');
 
   const config = loadConfig();
   log(`Watching ${config.wallets.length} wallet(s) | Poll: ${config.poll_interval_seconds}s`);
