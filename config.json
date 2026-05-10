@@ -1,0 +1,15 @@
+{
+  "wallets": [
+    {
+      "address": "YOUR_WALLET_ADDRESS",
+      "label": "My DorkFi Position",
+      "chains": ["voi", "algorand"],
+      "hf_floor": 1.4,
+      "hf_target": 1.6,
+      "action": "alert",
+      "notify": true
+    }
+  ],
+  "poll_interval_seconds": 60,
+  "alert_cooldown_minutes": 30
+}
